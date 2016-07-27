@@ -25,3 +25,34 @@ function remove (json, keyToDel) {
   
   return json;
 }
+
+//This function valid multiples <form></form> containing required fields and return a validate status.
+//NOTE: This example is using an AngularJS $scope to validate the form.
+function validForms(){            
+            //get all forms 
+            var arrForms = {};
+            $("form").each(function () { arrForms[$(this).attr('name')] = {}; });
+
+            //check if all forms has values and are valid
+            for (var key in arrForms) {            
+                arrForms[key].hasValue = false;
+                arrForms[key].valid = $scope[key].$valid; //AngularJS $scope
+              
+                //If form and a prime form are valid
+                if (arrForms[key].valid && $scope.formItems.$valid) {
+                    return true;
+                } else { //if for is not valid but has values
+                    $('form[name=' + key + '] input').each(function () {
+                        if ($(this).val() != '') {
+                            arrForms[key].hasValue = true;
+                        }
+                    });
+
+                    if (arrForms[key].hasValue) { 
+                        return false;
+                    } else { //if form has no values, set prime form validation
+                        return $scope.formItems.$valid;
+                    }
+                }                                    
+            };
+        }
